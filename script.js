@@ -45,7 +45,7 @@ const data = [{
         span: `Camisetas`,
         titulo2: `Lightweight Jacket`,
         paragrafo1: `Adicione um pouco de energia ao seu guarda-roupa de inverno com esta jaqueta vibrante...`,
-        paragrafo2: 100.00,
+        paragrafo2: 40.00,
         button: `Adicionar ao carrinho`,
         quantidade: 0
     },
@@ -83,10 +83,9 @@ const data = [{
 ];
 
 
-//----------VARIÁVEIS DE CONTROLE-----------------------------------------------------------------
+//----------BANCO DE DADOS DO CARRINHO ALIMENTADO AO ADICIONAR PRODUTO------------------------------
 
 let dataBaseCarrinho = []
-let auxiDivTotal = false
 
 
 //----------FUNÇÃO CRIA O ITEM DA LISTA DE PRODUTOS------------------------------------------------
@@ -129,29 +128,37 @@ function createPost(arrayPosts) {
         button.setAttribute(`key`, arrayPosts[i].id)
         button.addEventListener(`click`, function() {
 
+            // pegando o valor da key do elemento clicado
             let key = this.getAttribute(`key`);
+            console.log(key)
 
+            // filtrar o array do elemento clicado elemento clicado 
             const response = data.filter((valor) => { return valor.id == key })
 
-            dataBaseCarrinho.push(response[0])
 
+            // puxando o elemento clicado pra dentro de um array(global) que representa o carrinho            
+            dataBaseCarrinho.push(response[0])
             console.log(dataBaseCarrinho)
 
             // preço total
             const soma = dataBaseCarrinho.reduce((previus, current) => previus + current.paragrafo2, 0)
+            console.log(soma)
 
             // quantidade itens
             const tamanho = dataBaseCarrinho.length
-
             console.log(tamanho)
-            console.log(soma)
 
+
+            // chamando a função que cria os itens do carrinho
             createCarrinhoPost(data[key])
 
-            divTotal()
+            // escondendo informações de "carrinho vazio" e "adicione itens" quando tem produtos no carrinho
             let esconder = document.querySelectorAll(`.esconder`)
             esconder[0].style.display = `none`
             esconder[1].style.display = `none`
+
+            // chamando função que cria caixa(preta) do total e da quantidade de produtos
+            criaBoxPreta()
         })
 
 
@@ -169,152 +176,109 @@ function createPost(arrayPosts) {
 createPost(data)
 
 
-//----------------------------------CRIANDO CARRINHO VAZIO-------------------------------------------------//
-
-const itens = [{
-    button: `Adicionar ao carrinho`,
-    titulo3: `Carrinho Vazio`,
-    span: `Adicione itens`
+//----------FUNÇÃO CRIA ITENS CARRINHO-------------------------------------------------------------
 
 
-}]
+function createCarrinhoPost(parametroItensCarrinho) {
 
-function createCarrinho(arrayCarrinho) {
-
-    // SETANDO O ASIDE PELA CLASS
-    const aside = document.querySelector('.aside');
-    // PERCORRENDO PARAMETRO CRIANDO MEU ITENS DA LISTA E ADD PELA CLASS
-
-    for (let i = 0; i < itens.length; i++) {
-        const div = document.createElement('div'); //Criar div
-        div.classList.add('carrinho')
-
-        const titulo3 = document.createElement('h3'); // Criar titulo 3
-        titulo3.innerText = arrayCarrinho[i].titulo3
-        titulo3.classList.add('esconder')
-
-        const span = document.createElement('span'); // Criar span
-        span.innerText = arrayCarrinho[i].span
-        span.classList.add('esconder')
+    let remove = `Remover produto`
 
 
-
-
-        div.appendChild(titulo3);
-        div.appendChild(span);
-        aside.appendChild(div);
-    }
-
-
-
-}
-createCarrinho(itens)
-
-
-
-//--------------------------FUNÇÃO CRIA ITENS CARRINHO------------------------------
-
-
-function createCarrinhoPost(dataBase) {
 
     const containerCarrinho = document.querySelector('.carrinho');
-    // PERCORRENDO PARAMETRO CRIANDO MEU ITENS DA LISTA E ADD PELA CLASS
 
-    const div = document.createElement('div'); //Criar li
+    // criar div do carrinho
+    const div = document.createElement('div');
     div.classList.add('divCarrinho')
 
+    // criar "caixa" da imagem
     const figure = document.createElement('figure')
     const img = document.createElement('img'); //Criar img
-    img.src = dataBase.img;
+    img.src = parametroItensCarrinho.img;
     img.classList.add('imagemCarrinho')
 
+    // Criar "caixa" do titulo preço e bottão do item do carrinho
     const detalhes = document.createElement('div')
+    detalhes.classList.add(`classDivItensCarrinho`)
 
-    const titulo2 = document.createElement('h2'); // Criar titulo 2
-    titulo2.innerText = dataBase.titulo2
+    // Criar titulo 2 (do produto no carrinho)
+    const titulo2 = document.createElement('h2');
+    titulo2.innerText = parametroItensCarrinho.titulo2
 
-    const paragrafo2 = document.createElement('p'); // Criar paragrafo 2
-    paragrafo2.innerText = `R$ ${dataBase.paragrafo2},00`
+    // Criar paragrafo 2 (preço do produto no carinho)
+    const paragrafo2 = document.createElement('p');
+    paragrafo2.innerText = `R$ ${parametroItensCarrinho.paragrafo2},00`
     paragrafo2.classList.add('precoCarrinho')
 
 
-    //----------BOTÃO DE REMOVER PRODUTOS DO CARRINHO--------------------------
-
-    let remove = `Remover produto`
+    //botão de remover produtos do carrinho
     const removeProduto = document.createElement('button');
-    removeProduto.innerText = remove
+    removeProduto.innerText = remove // variavel declarada 
     removeProduto.classList.add(`botaoRemove`)
-    removeProduto.setAttribute(`key`, dataBase.id)
+    removeProduto.setAttribute(`key`, parametroItensCarrinho.id)
 
-
-    //-------------BOTÃO DE REMOVER ITEM-----------------------------------
-
+    // evento de clique do botão de REMOVER 
     removeProduto.addEventListener(`click`, function() {
 
-
-
-
-        let key = this.getAttribute(`key`);
-
-
-        // console.log(dataBaseCarrinho)
-        let novoArray = []
-
-        let removeItem = dataBaseCarrinho.find((valor) => {
-
-                console.log(valor.id, key)
-
-                if (valor.id == key) {
-                    let indice = dataBaseCarrinho.indexOf(valor)
-                    console.log(indice)
-                    for (let i = 0; i < dataBaseCarrinho.length; i++) {
-                        if (i !== indice) {
-
-                            novoArray.push(dataBaseCarrinho[i])
-                        }
-
-                    }
-
-                }
-                console.log(novoArray)
-            })
-            // console.log(novoArray)
-        dataBaseCarrinho = novoArray
-        novoArray = []
-            // console.log(removeItem)
-
-        console.log(dataBaseCarrinho)
-        divTotal()
-
+        // remover div dos produtos adicionados no carrinho
         div.remove()
-        figure.remove()
 
-
-        // RETIRAR ITEM DO ARRAY
-
-
-
-        // VOLTAR COM O "CARRINHO VAZIO"
-
+        // retornando com as informações de "carrinho vazio" e "adicione itens" quando não tem produtos no carrinho
         let quantidadeItens = document.getElementsByClassName('divCarrinho')
 
         if (quantidadeItens.length === 0) {
             let esconder = document.querySelectorAll(`.esconder`)
+            console.log(esconder)
             esconder[0].style.display = `flex`
             esconder[1].style.display = `flex`
         }
+        //------------------------------------------------------------------------
 
-        //subtrai
-        const subtrai = dataBaseCarrinho.reduce((previus, current) => previus + current.paragrafo2, 0)
-        console.log(subtrai)
-            // quantidade itens
-        const tamanho2 = dataBaseCarrinho.length
-        console.log(tamanho2)
+        // pegando o valor da key e colocando em uma variavel para comparação com id
+        let key = this.getAttribute(`key`);
 
+
+        // filtrar o array do elemento clicado 
+        const responseRetira = data.filter((valor) => { return valor.id == key })
+        console.log(responseRetira)
+
+        //achando posição do elemento retirado no array "dataBaseCarrinho"
+        let posicaoElementoRetirado = dataBaseCarrinho.indexOf(responseRetira[0])
+        console.log(posicaoElementoRetirado)
+
+
+        // excluindo o elemento clicado de dentro do array(global) que representa o carrinho            
+        dataBaseCarrinho.splice(posicaoElementoRetirado, 1, )
+        console.log(dataBaseCarrinho)
+
+        // preço total atualizado
+        const somaAtualizada = dataBaseCarrinho.reduce((previus, current) => previus + current.paragrafo2, 0)
+        console.log(somaAtualizada)
+
+        // quantidade itens atualizado
+        const tamanhoAtualizado = dataBaseCarrinho.length
+        console.log(tamanhoAtualizado)
+
+        // chamando função que cria caixa(preta) do total e da quantidade de produtos
+        criaBoxPreta()
+
+
+        // removendo a caixa das informações de quantidade/preço quando algum item é retirado
+        let pegaCaixaPeloId = document.getElementById(`${dataBaseCarrinho.length + 1}`)
+        if (pegaCaixaPeloId) {
+            pegaCaixaPeloId.remove()
+        }
+
+        // removendo a caixa das informações de quantidade/preço quando carrinho estiver vazio
+        const caixaPretaVazia = document.querySelector('.classCaixaPreta');
+        let meuId = caixaPretaVazia.id
+
+        if (meuId == 0) {
+            caixaPretaVazia.remove()
+        }
 
 
     })
-
 
 
     div.appendChild(img);
@@ -325,59 +289,116 @@ function createCarrinhoPost(dataBase) {
     detalhes.appendChild(removeProduto)
     containerCarrinho.appendChild(div)
 
-
-
 }
 
 
 
-//------ FUNÇÃO CRIA DIV QUANTIDADE TOTAL-------------------------
+
+//----------FUNÇÃO CRIA TEXTO DO CARRINHO ENQUANTO VAZIO-------------------------------------------------
+
+
+const dataCarrinhoVazio = [{
+
+    titulo3: `Carrinho Vazio`,
+    span: `Adicione itens`
+
+}]
+
+function createCarrinho(arrayCarrinho) {
+
+    // setando aside pela class
+    const aside = document.querySelector('.aside');
 
 
 
-function divTotal() {
+    for (let i = 0; i < dataCarrinhoVazio.length; i++) {
 
+        const div = document.createElement('div'); //Criar div (caixa carrinho vazio)
+        div.classList.add('carrinho')
 
-    if (dataBaseCarrinho.length > 0 && auxiDivTotal === false) {
-        const containerQuantidade = document.querySelector('.aside');
-        const div1 = document.createElement('div');
-        div1.classList.add('classTeste')
-        const div2 = document.createElement('div');
-        div2.classList.add('classTeste')
+        const titulo3 = document.createElement('h3'); // Criar titulo 3 (texto "carrinho vazio")
+        titulo3.innerText = arrayCarrinho[i].titulo3
+        titulo3.classList.add('esconder')
 
-        const spanTextQuant = document.createElement(`span`)
-        spanTextQuant.innerText = `Quantidade:`
-        spanTextQuant.classList.add('classTextoQuant')
-        const spanTextTotal = document.createElement(`span`)
-        spanTextTotal.innerText = `Total:`
-        spanTextTotal.classList.add('classTextoQuant')
+        const span = document.createElement('span'); // Criar span (texto "adicione itens")
+        span.innerText = arrayCarrinho[i].span
+        span.classList.add('esconder')
 
-        const spanQuant = document.createElement(`span`)
-        spanQuant.innerText = `Quantidade:`
-        spanQuant.classList.add('classQuant')
-        const spanTotal = document.createElement(`span`)
-        spanTotal.innerText = `Total:`
-        spanTotal.classList.add('classQuant')
-
-
-
-        containerQuantidade.appendChild(div1)
-        containerQuantidade.appendChild(div2)
-        div1.appendChild(spanTextQuant)
-        div2.appendChild(spanTextTotal)
-        div1.appendChild(spanQuant)
-        div2.appendChild(spanTotal)
-
-        auxiDivTotal = true
-
-    } else if (dataBaseCarrinho.length === 0) {
-        let div1 = document.getElementsByClassName('classTeste')
-        console.log(div1)
-        auxiDivTotal = false
-
-        div1[0].remove()
-        div1[0].remove()
-
+        div.appendChild(titulo3);
+        div.appendChild(span);
+        aside.appendChild(div);
     }
+}
+
+createCarrinho(dataCarrinhoVazio)
+
+
+
+
+
+
+//------ FUNÇÃO CRIA CAIXA COM INFORMAÇÕES DE QUANTIDADE/VALOR TOTAL-------------------------
+
+
+
+function criaBoxPreta() {
+
+
+    const containerQuantidade = document.querySelector('.aside');
+
+    //  criando caixa preta com informações quantidade/total
+    const divPai = document.createElement('div');
+    divPai.classList.add('classCaixaPreta')
+    divPai.id = `${dataBaseCarrinho.length}`
+
+    const divQuantidade = document.createElement(`div`)
+    divPai.appendChild(divQuantidade)
+    divQuantidade.classList.add('caixaQuantidade')
+
+
+    const divTotal = document.createElement(`div`)
+    divPai.appendChild(divTotal)
+    divTotal.classList.add('caixaTotal')
+
+
+    // criando spans da quantitade 
+    const spanTextQuant = document.createElement(`span`) // texto
+    spanTextQuant.innerText = `Quantidade:`
+    spanTextQuant.classList.add('classTexto')
+
+    const spanValorQuant = document.createElement(`span`) // valor quantidade
+    spanValorQuant.innerText = `${dataBaseCarrinho.length}`
+    spanValorQuant.classList.add('classValor')
+
+    // criando spans do total
+    const spanTextTotal = document.createElement(`span`) //texto
+    spanTextTotal.innerText = `Total:`
+    spanTextTotal.classList.add('classTexto')
+
+    const spanValorTotal = document.createElement(`span`) // valor preço
+    const soma = dataBaseCarrinho.reduce((previus, current) => previus + current.paragrafo2, 0)
+    spanValorTotal.innerText = `R$ ${soma},00`
+    spanValorTotal.classList.add('classValor')
+
+
+
+    containerQuantidade.appendChild(divPai)
+    divPai.appendChild(divQuantidade)
+    divPai.appendChild(divTotal)
+    divQuantidade.appendChild(spanTextQuant)
+    divQuantidade.appendChild(spanValorQuant)
+    divTotal.appendChild(spanTextTotal)
+    divTotal.appendChild(spanValorTotal)
+
+
+    var pegaCaixaPeloId = document.getElementById(`${dataBaseCarrinho.length - 1}`)
+    if (pegaCaixaPeloId) {
+        pegaCaixaPeloId.remove()
+    }
+
+
+
+
+
 
 }

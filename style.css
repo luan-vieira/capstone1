@@ -4,6 +4,8 @@
         
         main {
             display: flex;
+            margin: auto;
+            width: 1500px;
         }
         
         header {
@@ -64,7 +66,7 @@
         /*-------------MENU----------*/
         
         .list {
-            padding-left: 940px;
+            padding-left: 1150px;
             display: flex;
             padding-top: 27px;
         }
@@ -304,22 +306,37 @@
             width: 80px;
             height: 80px;
         }
+        /*ESTILIZAÇÃO DA CAIXA PRETA COM INFORMAÇÕES QUANTIDADE E PREÇO*/
         
-        .classTeste {
+        .classCaixaPreta {
             width: 343px;
-            height: 64px;
+            height: 128px;
             background: #333333;
+        }
+        
+        .caixaQuantidade {
+            color: #FFFFFF;
             display: flex;
+            padding-top: 30px;
+            padding-bottom: 32px;
+            padding-left: 17px;
+            justify-content: space-between;
         }
         
-        .classTextoQuant {
+        .caixaTotal {
             color: #FFFFFF;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 16px;
+            display: flex;
             padding-left: 17px;
-            padding-top: 20px;
+            justify-content: space-between;
         }
         
-        .classQuant {
-            color: #FFFFFF;
-            padding-left: 17px;
-            padding-top: 20px;
+        .classValor {
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 16px;
+            padding-right: 21px;
+            color: #828282;
         }
